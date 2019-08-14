@@ -25,7 +25,8 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 				'entity_id',
 				'customer_email',
 				'customer_firstname',
-				'customer_lastName'
+				'customer_lastName',
+				'created_at'
 			))
 			->addAttributeToFilter('created_at' , array('gt' => date('Y-m-d H:i:s', strtotime('-2 years'))))
 			->setCurPage($this->getRequest()->getParam('offset'))
@@ -41,8 +42,7 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 				foreach($visibleItems as $order_item_key => $orderItem) {
 					$products[] = array('product' => $orderItem->getId(), 'price' => $orderItem->getPrice(), 'quantity' => $orderItem->getData('qty_ordered'));
 				}
-				
-				$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(),$order->getCustomerFirstname(), $order->getCustomerLastname(), $products);
+				$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(),$order->getCustomerFirstname(), $order->getCustomerLastname(), $products, null, $order->getCreatedAt());
 				
 				$options = array (
 					'http' => array(
