@@ -11,7 +11,7 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 	
 	public function pastordersAction() {
 		
-		$key = hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey());
+		$key = Mage::helper('swift/Data')->_hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey());
 		
 		if (!is_bool($key) && !is_null($key)) {
 			

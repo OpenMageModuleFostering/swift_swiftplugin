@@ -111,7 +111,7 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 			'http' => array(
 				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
 				'method'  => 'POST',
-				'content' => SwiftAPI::Query($request, hex2bin($key))
+				'content' => SwiftAPI::Query($request, Mage::helper('swift/Data')->_hex2bin($key))
 			)
 		);
 		

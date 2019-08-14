@@ -118,7 +118,7 @@ class Swift_Swiftplugin_Block_Swiftblock extends Mage_Core_Block_Template {
 	*/
 	public function scriptResponse() {
 		if($this->request) {
-			$key = hex2bin($this->swiftData);
+			$key = Mage::helper('swift/Data')->_hex2bin($this->swiftData);
 			return SwiftAPI::Script($this->request, $key);
 		}
 		return '';

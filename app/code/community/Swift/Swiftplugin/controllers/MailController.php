@@ -17,7 +17,7 @@ class Swift_Swiftplugin_MailController extends Mage_Core_Controller_Front_Action
 				
 				//We time this regardless of whether debug is set as we can't yet tell if we want the debug or not
 				$fetchKeyTimeStart = microtime(true);
-				$key = hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey());
+				$key = Mage::helper('swift/Data')->_hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey());
 				$fetchKeyTimeEnd = microtime(true); 
 				
 				

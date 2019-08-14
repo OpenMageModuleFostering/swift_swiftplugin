@@ -39,7 +39,7 @@ class Swift_Swiftplugin_Model_XmlProduct {
 		//limit the data parsed
 		$productCollection = Mage::getModel('catalog/product')->getCollection()
 		->addAttributeToSelect(array('product_id','name','description', 'short_description','price','url_path','image','thumbnail', 'small_image','special_price','sku','special_to_date', 'special_from_date'))
-		->addAttributeToFilter('visibility', array('in' => [Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_CATALOG, Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_SEARCH, Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH]))
+		->addAttributeToFilter('visibility', array('in' => array(Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_CATALOG, Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_SEARCH, Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH)))
 		->addAttributeToFilter('status', array('in' => Mage::getSingleton('catalog/product_status')->getSaleableStatusIds()))
 		->setCurPage($this->offset)
 		->setPageSize($this->limit);

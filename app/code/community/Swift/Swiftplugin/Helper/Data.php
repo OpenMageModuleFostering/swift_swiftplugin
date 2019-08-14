@@ -73,13 +73,30 @@ class Swift_Swiftplugin_Helper_Data extends Mage_Core_Helper_Abstract {
 			$arr['modules'] = $module_output;
 			
 			$api_version = new SwiftAPI_Request_Version($_SERVER['HTTP_HOST'],$arr);
-			$key = hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey());
+			$key = Mage::helper('swift/Data')->_hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey());
 			if (!is_bool($key) && !is_null($key)) {
-				echo SwiftAPI::Encode($api_version, hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey()));
+				echo SwiftAPI::Encode($api_version,  Mage::helper('swift/Data')->_hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey()));
 			}
 			else {
 				json_encode($arr);
 			}
+		}
+		
+		public function _hex2bin($str) {
+			
+			if (function_exists( 'hex2bin' )) {
+				return hex2bin($str);
+			}
+			else {
+				$sbin = "";
+				$len = strlen( $str );
+				for ( $i = 0; $i < $len; $i += 2 ) {
+					$sbin .= pack( "H*", substr( $str, $i, 2 ) );
+				}
+
+				return $sbin;
+			}
+			
 		}
 }
 
