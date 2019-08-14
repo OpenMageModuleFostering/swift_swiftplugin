@@ -28,8 +28,10 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 				'customer_email',
 				'customer_firstname',
 				'customer_lastName',
-				'created_at'
+				'created_at',
+				'store_id'
 			))
+			->addAttributeToFilter('store_id' , Mage::app()->getStore()->getId())
 			->addAttributeToFilter('created_at' , array('gt' => date('Y-m-d', strtotime($date.'-2 years'))))
 			->setCurPage($offset)
 			->setPageSize($limit)
@@ -126,11 +128,12 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 			->getCollection()
 			->addFieldToSelect('*')
 			->addFieldToFilter('created' , array('lteq' => date('Y-m-d', strtotime($date))));
-			
+			$i = 0;
 			foreach($cacheCollection as $cacheItem) {
 				$cacheItem->delete();
+				$i++;
 			}
-			echo json_encode(array('The cache has deleted from before '.$date.'.'));
+			echo json_encode(array('The cache has deleted from before '.$date.'. Total = '.$i));
 		}
 		else {
 			echo json_encode(array('Invalid parameters.'));
