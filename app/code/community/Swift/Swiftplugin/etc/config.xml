@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Swift_Swiftplugin>
-            <version>1.4.0</version>
+            <version>1.4.1</version>
         </Swift_Swiftplugin>
     </modules>
 	 <frontend>

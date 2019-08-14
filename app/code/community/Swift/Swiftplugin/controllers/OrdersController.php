@@ -1,5 +1,7 @@
 <?php
 
+require_once(Mage::getBaseDir('lib') . '/SwiftAPI/SwiftAPI.php');
+
 /**
  * Description of OrdersController
  *
