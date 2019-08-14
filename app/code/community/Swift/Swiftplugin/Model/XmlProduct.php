@@ -39,7 +39,8 @@ class Swift_Swiftplugin_Model_XmlProduct {
 		//limit the data parsed
 		$productCollection = Mage::getModel('catalog/product')->getCollection()
 		->addAttributeToSelect(array('product_id','name','description', 'short_description','price','url_path','image','thumbnail', 'small_image','special_price','sku','special_to_date', 'special_from_date'))
-		->addAttributeToFilter('status', array('eq' => Mage_Catalog_Model_Product_Status::STATUS_ENABLED))
+		->addAttributeToFilter('visibility', array('in' => [Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_CATALOG, Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_SEARCH, Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH]))
+		->addAttributeToFilter('status', array('in' => Mage::getSingleton('catalog/product_status')->getSaleableStatusIds()))
 		->setCurPage($this->offset)
 		->setPageSize($this->limit);
 		
@@ -53,7 +54,9 @@ class Swift_Swiftplugin_Model_XmlProduct {
 			foreach ($productCollection as $product) {
 					
 				$stock_item = Mage::getModel('cataloginventory/stock_item')->loadByProduct( $product->getId() );
-					
+				
+				// check if in stock
+				
 				$qty = $stock_item->getData('qty');
 				$manageStock = $stock_item->getData('manage_stock');
 				$inStock = $stock_item->getData('is_in_stock');
