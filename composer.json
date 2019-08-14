@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/Swift_Swiftplugin",
+    "type": "magento-module",
+    "license": "LGPL",
+    "homepage": "",
+    "description": "Uses the SwiftCRM marketing service to send customers emails based on their shopping history and purchases.",
+    "authors": [
+    {
+        "name": "Simon Cooper",
+        "email": "simon@netready.biz"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

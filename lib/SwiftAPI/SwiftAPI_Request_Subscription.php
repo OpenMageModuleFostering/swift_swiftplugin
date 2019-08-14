@@ -1,0 +1,56 @@
+<?php 
+
+////////////////////////////////////////////////////////////////////////////////
+// Class: SwiftAPI_Request_Subscription
+////////////////////////////////////////////////////////////////////////////////
+
+
+class SwiftAPI_Request_Subscription extends SwiftAPI_Request
+	{
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Public properties.
+	//////////////////////////////////////////////////////////////////////////////
+
+	public $email;
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Public functions
+	//////////////////////////////////////////////////////////////////////////////
+
+	////////////////////////
+	// Public: __construct()
+	////////////////////////
+
+	public function __construct($domain, $user, $email, $version = NULL, $date = NULL)
+		{
+		$this -> email = $email;
+
+		parent::__construct($domain, SwiftAPI::OPERATION_SUBSCRIPTION, $user, $version, $date);
+		}
+
+
+	///////////////////
+	// Public: Create()
+	///////////////////
+
+	public static function Create(stdClass $fields)
+		{
+		parent::Validate($fields);
+
+		if(empty($fields -> email))
+			throw new SwiftAPI_Exception('SwiftAPI_Request_Subscription::Create(): "email" field is missing or empty.');
+
+		return new self
+			(
+			$fields -> domain,
+			$fields -> user,
+			$fields -> email,
+			$fields -> version,
+			$fields -> date
+			);
+		}
+	}
+
+?>
