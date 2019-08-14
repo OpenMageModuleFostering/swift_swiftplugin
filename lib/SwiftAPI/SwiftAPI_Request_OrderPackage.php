@@ -32,11 +32,11 @@ class SwiftAPI_Request_OrderPackage extends SwiftAPI_Request {
 		parent::Validate($fields);
 
 		if(!is_array($fields -> orderPackage))
-			throw new SwiftAPI_Exception('SwiftAPI_Request_OrderPackage::Create(): "emailPackage" field is missing.');
+			throw new SwiftAPI_Exception('SwiftAPI_Request_OrderPackage::Create(): "orderPackage" field is missing.');
 
 		foreach ($fields -> orderPackage as $email_content) {
 			if (!(is_object($email_content))) {
-				throw new SwiftAPI_Exception('SwiftAPI_Request_OrderPackage::Create(): "emailPackage" does not contain the class SwiftAPI_Request_Order.');
+				throw new SwiftAPI_Exception('SwiftAPI_Request_OrderPackage::Create(): "orderPackage" does not contain the class SwiftAPI_Request_Order.');
 			}
 		}
 		

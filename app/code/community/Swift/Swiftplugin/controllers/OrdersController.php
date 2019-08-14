@@ -18,7 +18,9 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 			$domain = $_SERVER['HTTP_HOST'];
 			$user = Mage::helper('swift/Data')->generateUserId();
 			$url = 'http:'.SwiftApi::SWIFTAPI_CRM_URL;
-			$limit = 1000;
+			$limit = is_numeric($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : 500;
+			$offset = is_numeric($this->getRequest()->getParam('offset')) ? $this->getRequest()->getParam('offset') : 1;
+			$date = $this->getRequest()->getParam('date') ? $this->getRequest()->getParam('date') : date('Y-m-d');
 		
 			$orderCollection = Mage::getModel('sales/order')->getCollection()
 			->addFieldToSelect(array(
@@ -28,51 +30,60 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 				'customer_lastName',
 				'created_at'
 			))
-			->addAttributeToFilter('created_at' , array('gt' => date('Y-m-d H:i:s', strtotime('-2 years'))))
-			->setCurPage($this->getRequest()->getParam('offset'))
-			->setPageSize($limit);
+			->addAttributeToFilter('created_at' , array('gt' => date('Y-m-d', strtotime($date.'-2 years'))))
+			->setCurPage($offset)
+			->setPageSize($limit)
+			->setOrder('created_at', 'ASC');
 				
-			$orders_present = false; 
-			foreach($orderCollection as $order) {
+			if ($offset <= $orderCollection->getLastPageNumber()) {
 				
-				$visibleItems = $order->getAllVisibleItems();
-				$orders_present = true;
-				
-				$products = array();
-				foreach($visibleItems as $order_item_key => $orderItem) {
-					$products[] = array('product' => $orderItem->getId(), 'price' => $orderItem->getPrice(), 'quantity' => $orderItem->getData('qty_ordered'));
+				foreach($orderCollection as $order) {
+					
+					$visibleItems = $order->getAllVisibleItems();
+					$products = array();
+					
+					foreach($visibleItems as $order_item_key => $orderItem) {
+						$products[] = array('product' => $orderItem->getId(), 'price' => $orderItem->getPrice(), 'quantity' => $orderItem->getData('qty_ordered'));
+					}
+					
+					$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(), $order->getCustomerFirstname(), $order->getCustomerLastname(), $products, $order->getId(), null, null, $order->getCreatedAt());
+					
+					$options = array (
+						'http' => array(
+							'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+							'method'  => 'POST',
+							'content' => SwiftAPI::Query($request, $key)
+						)
+					);
+					
+					$context  = stream_context_create($options);
+					file_get_contents($url, false, $context);
+					
 				}
-				$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(), $order->getCustomerFirstname(), $order->getCustomerLastname(), $products, $order->getId(), null, null, $order->getCreatedAt());
 				
-				$options = array (
-					'http' => array(
-						'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-						'method'  => 'POST',
-						'content' => SwiftAPI::Query($request, $key)
-					)
-				);
-				
-				$context  = stream_context_create($options);
-				file_get_contents($url, false, $context);
-				
-			}
-			
-			if ($limit > $orderCollection->count()) {
-				$response = array();
-				$response['status'] = 2;
-				$response['message'] = 'No more orders to send';
+				if ($limit > $orderCollection->count()) {
+					$response = array();
+					$response['status'] = 3;
+					$response['message'] = 'No more orders to send at this time, but has not fetched a full '. $limit;
+				}
+				else {
+					$response = array();
+					$response['status'] =  1; 
+					$response['message'] = 'Past orders successfully sent to swift';
+				}
 			}
 			else {
 				$response = array();
-				$response['status'] =  $orders_present ? 1 : 0;
-				$response['message'] = $orders_present ? 'Past orders successfully sent to swift' : 'No more orders to send';
+				$response['status'] = 2;
+				$response['message'] = 'No more orders to send at this time';
 			}
 		}
 		else {
 			$response = array();
 			$response['status'] = 0;
 			$response['message'] = 'You cannot perform this operation as you have not registered your private key with swift';
-		}		
+		}
+		
 		echo json_encode($response);
 		
 	}

@@ -62,8 +62,24 @@ class Swift_Swiftplugin_Helper_Data extends Mage_Core_Helper_Abstract {
 			$arr['plugin_version'] = (string)Mage::getConfig()->getNode()->modules->Swift_Swiftplugin->version;
 			$arr['host'] =  $_SERVER['HTTP_HOST'];
 			$arr['magento_version'] =  Mage::getVersion();
+			$arr['php'] = phpversion();
 			
-			return json_encode($arr);
+			$modules = Mage::getConfig()->getNode('modules')->children();
+			$modulesArray = (array)$modules;
+			$module_output = array();
+			foreach($modulesArray as $module_name => $module) {
+				$module_output[$module_name] = $module->is('active');
+			}
+			$arr['modules'] = $module_output;
+			
+			$api_version = new SwiftAPI_Request_Version($_SERVER['HTTP_HOST'],$arr);
+			$key = hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey());
+			if (!is_bool($key) && !is_null($key)) {
+				echo SwiftAPI::Encode($api_version, hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey()));
+			}
+			else {
+				json_encode($arr);
+			}
 		}
 }
 

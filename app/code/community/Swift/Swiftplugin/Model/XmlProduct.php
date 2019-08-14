@@ -12,13 +12,22 @@ class Swift_Swiftplugin_Model_XmlProduct {
 
 	protected $offset;
 	
+	protected $limit;
+	
 	public function __construct() {
 		$this->offset = 1;
+		$this->limit = 100;
 	}
 	
 	public function setOffset($offset = 1) {
 		if (is_numeric($offset)) {
 			$this->offset = $offset;
+		}
+	}
+	
+	public function setLimit($limit = 100) {
+		if (is_numeric($limit)) {
+			$this->limit = $limit;
 		}
 	}
 	
@@ -28,12 +37,11 @@ class Swift_Swiftplugin_Model_XmlProduct {
 	 */
 	public function generate_xml() {
 		//limit the data parsed
-		$limit = 100;
 		$productCollection = Mage::getModel('catalog/product')->getCollection()
 		->addAttributeToSelect(array('product_id','name','description', 'short_description','price','url_path','image','thumbnail', 'small_image','special_price','sku','special_to_date', 'special_from_date'))
 		->addAttributeToFilter('status', array('eq' => Mage_Catalog_Model_Product_Status::STATUS_ENABLED))
 		->setCurPage($this->offset)
-		->setPageSize($limit);
+		->setPageSize($this->limit);
 		
 		$xmlRow = array();
 		$xml = new xml();

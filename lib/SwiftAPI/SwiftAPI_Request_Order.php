@@ -36,7 +36,6 @@ class SwiftAPI_Request_Order extends SwiftAPI_Request
 		$this -> orderId		= $orderId;
 		$this -> orderStatus	= $orderStatus;
 		
-
 		parent::__construct($domain, SwiftAPI::OPERATION_ORDER, $user, $version, $date);
 		}
 

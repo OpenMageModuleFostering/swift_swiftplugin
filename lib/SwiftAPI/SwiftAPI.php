@@ -13,20 +13,21 @@ class SwiftAPI
 
 	const VERSION = 3;
 
-	const OPERATION_HOME        = 'home';
-	const OPERATION_PRODUCT     = 'product';
-	const OPERATION_CART        = 'cart';
-	const OPERATION_ORDER       = 'order';
-	const OPERATION_PASTORDER   = 'pastorder';
-	const OPERATION_SUBSCRIPTION= 'subscription';
-	const OPERATION_VIEWMAIL    = 'viewmail';
-	const OPERATION_SENDMAIL    = 'sendmail';
-	const OPERATION_UNSUBSCRIBE = 'unsubscribe';
+	const OPERATION_HOME		= 'home';
+	const OPERATION_PRODUCT		= 'product';
+	const OPERATION_CART		= 'cart';
+	const OPERATION_ORDER		= 'order';
+	const OPERATION_PASTORDER	= 'pastorder';
+	const OPERATION_SUBSCRIPTION	= 'subscription';
+	const OPERATION_VIEWMAIL	= 'viewmail';
+	const OPERATION_SENDMAIL	= 'sendmail';
+	const OPERATION_UNSUBSCRIBE	= 'unsubscribe';
+	const OPERATION_EMAILPACKAGE	= 'emailpackage';
 	const OPERATION_PING		= 'ping';
-	const OPERATION_EMAILPACKAGE = 'emailpackage';
-	const OPERATION_ORDERPACKAGE = 'orderpackage';
+	const OPERATION_ORDERPACKAGE	= 'orderpackage';
+	const OPERATION_VERSION 	= 'version';
 
-	const SWIFTAPI_CRM_URL       =  '//api.swiftcrm.net';
+	const SWIFTAPI_CRM_URL		= '//api.swiftcrm.net';
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -79,8 +80,9 @@ class SwiftAPI
 		$json = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_CBC, $iv), "\0");
 
 		// Decode json object.
-		if(!($fields = json_decode($json)))
+		if(!($fields = json_decode($json))) {
 			throw new SwiftAPI_Exception('SwiftAPI::Decode(): ' . json_last_error_msg());
+		}
 
 		// Create a SwiftAPI_Request object.
 		$request = SwiftAPI_Request::Create($fields);
