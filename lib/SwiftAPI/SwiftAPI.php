@@ -11,7 +11,7 @@ class SwiftAPI
 	// Class constants.
 	//////////////////////////////////////////////////////////////////////////////
 
-	const VERSION = 2;
+	const VERSION = 3;
 
 	const OPERATION_HOME        = 'home';
 	const OPERATION_PRODUCT     = 'product';
@@ -24,8 +24,9 @@ class SwiftAPI
 	const OPERATION_UNSUBSCRIBE = 'unsubscribe';
 	const OPERATION_PING		= 'ping';
 	const OPERATION_EMAILPACKAGE = 'emailpackage';
+	const OPERATION_ORDERPACKAGE = 'orderpackage';
 
-	const SWIFTAPI_CRM_URL       = '//api.swiftcrm.net';
+	const SWIFTAPI_CRM_URL       =  '//api.swiftcrm.net';
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -71,8 +72,8 @@ class SwiftAPI
 		$ivlen = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
 
 		// Split message into data and initialization vector components.
-    $iv   = substr($message, 0, $ivlen);
-    $data = substr($message, $ivlen);
+		$iv   = substr($message, 0, $ivlen);
+		$data = substr($message, $ivlen);
 
 		// Decrypt data and trim trailing NULL bytes.
 		$json = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_CBC, $iv), "\0");
@@ -106,17 +107,6 @@ class SwiftAPI
 			'data'    => SwiftAPI::Encode($request, $key)
 			));
 		}
-
-
-	/////////////////
-	// Public: Link()
-	/////////////////
-
-	public static function Link(SwiftAPI_Request $request, $key, $content, Site $site)
-		{
-		return '<a href="'. $site->getSslUrl() . self::SWIFTAPI_CRM_URL . '?' . self::Query($request, $key) . '">' . $content . '</a>';
-		}
-
 
 	///////////////////
 	// Public: Script()
@@ -173,8 +163,6 @@ class SwiftAPI
 				http.open("POST","'. self::SWIFTAPI_CRM_URL .'", true);
 		
 				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				http.setRequestHeader("Content-length", query.length);
-				http.setRequestHeader("Connection", "close");
 		
 				http.onreadystatechange= function()
 					{
@@ -210,26 +198,5 @@ class SwiftAPI
 		}
 
 	}
-	
-if ( !function_exists( 'hex2bin' ) ) {
-	
-	function hex2bin($hexstr) {
-        $n = strlen($hexstr);
-        $sbin="";  
-        $i=0;
-        while($i<$n) {      
-            $a =substr($hexstr,$i,2);          
-            $c = pack("H*",$a);
-            if ($i==0){
-				$sbin=$c;
-			}
-            else {
-				$sbin.=$c;
-			}
-            $i+=2;
-        }
-        return $sbin;
-    } 
-}
 
 ?>

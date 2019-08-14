@@ -8,6 +8,7 @@ class SwiftAPI_Request_EmailPackage extends SwiftAPI_Request {
 
 	public $emailPackage;
 	public $site;
+	public $is_mail_function;
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -18,11 +19,20 @@ class SwiftAPI_Request_EmailPackage extends SwiftAPI_Request {
 	// Public: __construct()
 	////////////////////////
 
-	public function __construct($domain, $user, $site, $emailPackage, $version = NULL, $date = NULL)
+	public function __construct($domain, $user, $site, $emailPackage, $is_mail_function = false, $version = NULL, $date = NULL)
 		{
 		$this -> emailPackage = $emailPackage;
 		$this -> site = $site;
+		$this->is_mail_function = $is_mail_function;
 		parent::__construct($domain, SwiftAPI::OPERATION_EMAILPACKAGE, $user, $version, $date);
+		}
+		
+		/**
+		 * Sets all schedules
+		 * because this isn't important and is related to the SwiftCRM_Scheduling not the plugin itself I want to make this optional
+		 */
+		public function setSchedules($schedules) {
+			$this->schedules = $schedules;
 		}
 
 
@@ -52,6 +62,7 @@ class SwiftAPI_Request_EmailPackage extends SwiftAPI_Request {
 			$fields -> user,
 			$fields -> site,
 			$fields -> emailPackage,
+			$fields -> is_mail_function,
 			$fields -> version,
 			$fields -> date
 			);

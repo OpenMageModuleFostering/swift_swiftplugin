@@ -61,12 +61,19 @@ class Swift_SwiftPlugin_Model_Observer
 			$event = $observer->getEvent();
 			if (!is_null($event)) {
 				$quote = $event->getQuote();
+				$order = $event->getOrder();
+				
+				
 				if (!is_null($quote)) {
 					// collect data about the order
 					$orderdata = $quote->getData();
+					$orderdata2 = $order->getData();
+					
 					$items = $quote->getAllVisibleItems();
 					// collect data about the orderer and assign them to session
 					Mage::getSingleton('core/session')->setProductOrderSuccessFlag(true);
+					Mage::getSingleton('core/session')->setSwiftOrderId($orderdata2['entity_id']);
+					Mage::getSingleton('core/session')->setSwiftOrderCreated($orderdata['created_at']);
 					Mage::getSingleton('core/session')->setSwiftForename($orderdata['customer_firstname']);
 					Mage::getSingleton('core/session')->setSwiftSurname($orderdata['customer_lastname']);
 					Mage::getSingleton('core/session')->setSwiftEmail($orderdata['customer_email']);

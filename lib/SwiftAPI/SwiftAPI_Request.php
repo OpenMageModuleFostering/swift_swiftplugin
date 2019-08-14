@@ -13,6 +13,7 @@ require_once('SwiftAPI_Request_Subscription.php');
 require_once('SwiftAPI_Request_ViewMail.php');
 require_once('SwiftAPI_Request_SendMail.php');
 require_once('SwiftAPI_Request_EmailPackage.php');
+require_once('SwiftAPI_Request_OrderPackage.php');
 
 
 abstract class SwiftAPI_Request
@@ -43,7 +44,7 @@ abstract class SwiftAPI_Request
 		$this -> operation = $operation;
 		$this -> user      = $user;
 		$this -> version   = $version ? $version : SwiftAPI::VERSION;
-		$this -> date      = $date ? $date : date_create() -> format('c');
+		$this -> date      = $date ? $date : date('Y-m-d H:i:s');
 		}
 
 
@@ -85,6 +86,8 @@ abstract class SwiftAPI_Request
 					return SwiftAPI_Request_Unsubscribe::Create($fields);
 				case SwiftAPI::OPERATION_EMAILPACKAGE:
 					return SwiftAPI_Request_EmailPackage::Create($fields);
+				case SwiftAPI::OPERATION_ORDERPACKAGE:
+					return SwiftAPI_Request_OrderPackage::Create($fields);
 				default:
 					throw new SwiftAPI_Exception('SwiftAPI_Request::Create(): Invalid operation: "' . $fields -> operation . '".');
 			}

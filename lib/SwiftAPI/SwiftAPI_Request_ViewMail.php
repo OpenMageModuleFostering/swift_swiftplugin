@@ -25,7 +25,7 @@ class SwiftAPI_Request_ViewMail extends SwiftAPI_Request
 	// Public: __construct()
 	////////////////////////
 
-	public function __construct($domain, $user, $email, $product, $emailId, $version = NULL, $date = NULL)
+	public function __construct($domain, $user, $email, $product, $emailId = null, $version = NULL, $date = NULL)
 		{
 		$this -> email   = $email;
 		$this -> product = $product;
@@ -49,9 +49,6 @@ class SwiftAPI_Request_ViewMail extends SwiftAPI_Request
 		if(empty($fields -> product))
 			throw new SwiftAPI_Exception('SwiftAPI_Request_ViewMail::Create(): "product" field is missing or empty.');
 		
-		if(empty($fields -> emailId))
-			throw new SwiftAPI_Exception('SwiftAPI_Request_ViewMail::Create(): "emailId" field is missing or empty.');
-
 		return new self
 			(
 			$fields -> domain,

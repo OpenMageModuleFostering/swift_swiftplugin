@@ -42,7 +42,7 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 				foreach($visibleItems as $order_item_key => $orderItem) {
 					$products[] = array('product' => $orderItem->getId(), 'price' => $orderItem->getPrice(), 'quantity' => $orderItem->getData('qty_ordered'));
 				}
-				$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(),$order->getCustomerFirstname(), $order->getCustomerLastname(), $products, null, $order->getCreatedAt());
+				$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(), $order->getCustomerFirstname(), $order->getCustomerLastname(), $products, $order->getId(), null, null, $order->getCreatedAt());
 				
 				$options = array (
 					'http' => array(

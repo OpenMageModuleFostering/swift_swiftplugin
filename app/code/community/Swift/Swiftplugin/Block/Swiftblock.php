@@ -103,7 +103,7 @@ class Swift_Swiftplugin_Block_Swiftblock extends Mage_Core_Block_Template {
 				break;
 			case SwiftAPI::OPERATION_ORDER:
 				$data = $this->getOrderData();
-				$this->request = new SwiftAPI_Request_Order($domain, $user, $swiftEmail, $data['forename'], $data['surname'], $data['products'], $version);
+				$this->request = new SwiftAPI_Request_Order($domain, $user, $swiftEmail, $data['forename'], $data['surname'], $data['products'], $data['order_id'], null, $version, $data['created']);
 				break;
 			case SwiftAPI::OPERATION_SUBSCRIPTION:
 				$this->request = new SwiftAPI_Request_Subscription($domain, $user, $swiftEmail, $version);
@@ -153,6 +153,8 @@ class Swift_Swiftplugin_Block_Swiftblock extends Mage_Core_Block_Template {
 	*/
 	private function getOrderData() {
 		$data = array();
+		$data['order_id'] = Mage::getSingleton('core/session')->getSwiftOrderId(true);
+		$data['created'] = Mage::getSingleton('core/session')->getSwiftOrderCreated(true);
 		$data['forename'] = Mage::getSingleton('core/session')->getSwiftForename(true);
 		$data['surname'] = Mage::getSingleton('core/session')->getSwiftSurname(true);
 		$data['products'] = array();

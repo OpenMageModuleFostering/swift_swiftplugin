@@ -16,6 +16,8 @@ class SwiftAPI_Request_PastOrder extends SwiftAPI_Request
 	public $forename;
 	public $surname;
 	public $products;
+	public $orderId;
+	public $orderStatus;
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -26,12 +28,14 @@ class SwiftAPI_Request_PastOrder extends SwiftAPI_Request
 	// Public: __construct()
 	////////////////////////
 
-	public function __construct($domain, $user, $email, $forename, $surname, array $products, $version = NULL, $date = NULL)
+	public function __construct($domain, $user, $email, $forename, $surname, array $products, $orderId = null, $orderStatus = null, $version = NULL, $date = NULL)
 		{
-		$this -> email     = $email;
-		$this -> forename  = $forename;
-		$this -> surname   = $surname;
-		$this -> products  = $products;
+		$this -> email		= $email;
+		$this -> forename	= $forename;
+		$this -> surname	= $surname;
+		$this -> products	= $products;
+		$this -> orderId	= $orderId;
+		$this -> orderStatus	= $orderStatus;
 
 		parent::__construct($domain, SwiftAPI::OPERATION_PASTORDER, $user, $version, $date);
 		}
@@ -48,11 +52,11 @@ class SwiftAPI_Request_PastOrder extends SwiftAPI_Request
 		if(empty($fields -> email))
 			throw new SwiftAPI_Exception('SwiftAPI_Request_PastOrder::Create(): "email" field is missing or empty.');
 
-		if(empty($fields -> forename))
-			throw new SwiftAPI_Exception('SwiftAPI_Request_PastOrder::Create(): "forename" field is missing or empty.');
-
-		if(empty($fields -> surname))
-			throw new SwiftAPI_Exception('SwiftAPI_Request_PastOrder::Create(): "surname" field is missing or empty.');
+//		if(empty($fields -> forename))
+//			throw new SwiftAPI_Exception('SwiftAPI_Request_PastOrder::Create(): "forename" field is missing or empty.');
+//
+//		if(empty($fields -> surname))
+//			throw new SwiftAPI_Exception('SwiftAPI_Request_PastOrder::Create(): "surname" field is missing or empty.');
 
 		if(empty($fields -> products))
 			throw new SwiftAPI_Exception('SwiftAPI_Request_PastOrder::Create(): "products" field is missing or empty.');
@@ -68,6 +72,8 @@ class SwiftAPI_Request_PastOrder extends SwiftAPI_Request
 			$fields -> forename,
 			$fields -> surname,
 			$fields -> products,
+			isset($fields -> orderId) ? $fields -> orderId : null,
+			isset($fields -> orderStatus) ? $fields -> orderStatus : null,
 			$fields -> version,
 			$fields -> date
 			);
