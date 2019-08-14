@@ -40,17 +40,7 @@ class Swift_Swiftplugin_MailController extends Mage_Core_Controller_Front_Action
 						}
 						
 						$mail = Mage::getModel('core/email');
-						//$mail = Mage::getModel('core/email_template');
-						$collection = Mage::getModel('customer/customer')->getCollection()->addAttributeToSelect(array('firstname','lastname','email'))->getItemsByColumnValue('email', $emailTo);
-						if (count($collection) > 1) {
-							foreach($collection as $colKey => $customer) {
-								$customerData = $customer->getData();
-								// if present
-								$mail->setToName($customerData['firstname'] . ' ' . $customerData['lastname']);
-								break;
-							}
-						}
-						
+												
 						$mail->setToEmail($emailTo);
 						$mail->setBody($body);
 						$mail->setSubject($subject);
