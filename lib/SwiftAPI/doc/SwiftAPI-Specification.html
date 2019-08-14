@@ -35,7 +35,7 @@
 		<h1>SwiftAPI Specification</h1>
 
 		<h2>Version</h2>
-		<p>2</p>
+		<p>3</p>
 
 		<h2>Overview</h2>
 		<p>This document details the operations, transfer method, fields, and encryption scheme used to implement the SwiftAPI.</p>
@@ -79,11 +79,19 @@
 				</tr>
 				<tr>
 					<td>sendmail</td>
-					<td>The Swift system has generated an email to be sent by a clients site.</td>
+					<td>The Swift system has generated an email to be sent by a clients site. <strong>Not</strong> for sending to the swift system, this is what is sent to the clients website.</td>
 				</tr>
 				<tr>
 					<td>unsubscribe</td>
 					<td>A user unsubscribes from the Swift system.</td>
+				</tr>
+				<tr>
+					<td>ping</td>
+					<td>To confirm to the Swift system the plugin is sending data.</td>
+				</tr>
+				<tr>
+					<td>emailpackage</td>
+					<td>Packages a group of emails to send to the clients website. <strong>Not</strong> for sending to the swift system, this is what is sent to the clients website.</td>
 				</tr>
 			</tbody>
 		</table>
@@ -214,6 +222,34 @@
 					<td></td>
 					<td>Message content for a swift email.</td>
 				</tr>
+				<tr>
+					<td>key</td>
+					<td>String</td>
+					<td>ping</td>
+					<td></td>
+					<td>The Swift system key recieved upon registration.</td>
+				</tr>
+				<tr>
+					<td>monitor</td>
+					<td>Boolean</td>
+					<td>sendmail</td>
+					<td></td>
+					<td>A flag to indicate an email is being monitored.</td>
+				</tr>
+				<tr>
+					<td>emailId</td>
+					<td>String</td>
+					<td>sendmail, viewmail</td>
+					<td></td>
+					<td>A unique identifier from Swift system for logging.</td>
+				</tr>
+				<tr>
+					<td>emailPackage</td>
+					<td>Array</td>
+					<td>emailpackage</td>
+					<td></td>
+					<td>An array of JSON objects containing the fields sendmail required fields</td>
+				</tr>
 			</tbody>
 		</table>
 
@@ -244,6 +280,39 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<h2>Transfer Methods</h2>
+		<p>You can send the data string across different transfer methods such as SOAP. Here is an example request via JS:</p>
+<pre>&lt;script language=&quot;javascript&quot; type=&quot;text/javascript&quot;&gt;
+	window.onload = function()
+	{
+		// notice the version, domain and data attributes in the request
+		var query = &quot;version=3&amp;domain=test_magento.clients.netready.biz&amp;data=ypyiyeQE8Ve3FGNySm9YQ2t%2BGFOnwzPrs3Eh%2Bo9bAu9BgnNVqEPSU%2FGt1CwwvV6WdezRSm%2FKp2OK7nt95A1oYLkIt7LPdA0mX%2F2pucHHoiriBtdL%2F4lAk%2BdE4T0i7VcXb4OKZWMczv7n2%2FMygvBD03w%2F1kVNFHWAlQGhDYP5fDg16%2FhKGHB6jUdRTfUavWR7GG8jIv2obzLZs%2FXVoO%2BSFyB6Q%2FGNJ1hNZBgkqb6Zq7%2ByyjpcVc20s%2FB1%2BmUPOqHPTklu6GINtwsxq4tFANU7OHL10nS8fcYVUuDAOfav98o%3D&quot;;
+		var http;
+
+		// IE7+, Firefox, Chrome, Opera, Safari.
+		if(window.XMLHttpRequest)
+			http=new XMLHttpRequest();
+
+		// IE6, IE5.
+		else
+			http=new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);
+
+		http.open(&quot;POST&quot;,&quot;//api.swiftcrm.net&quot;, true);
+
+		http.setRequestHeader(&quot;Content-type&quot;, &quot;application/x-www-form-urlencoded&quot;);
+		http.setRequestHeader(&quot;Content-length&quot;, query.length);
+		http.setRequestHeader(&quot;Connection&quot;, &quot;close&quot;);
+
+		http.onreadystatechange= function()
+		{
+			if (http.readyState==4 &amp;&amp; http.status==200)
+				console.log(&quot;success&quot;);
+		}
+
+		http.send(query);
+	}
+&lt;/script&gt;</pre>
 
 	</body>
 

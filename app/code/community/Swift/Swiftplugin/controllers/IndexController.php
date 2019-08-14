@@ -12,6 +12,8 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 	 * Renders the form by default, if record exists in the database then retrieve that value and load it to the page
 	 */
 	public function indexAction() {
+		echo "it works";
+		die();
 		$data = Mage::helper('swift/Data')->getSwiftPrivateData();
 		$swiftId = 0;
 		if (!is_bool($data) && is_array($data)) {
