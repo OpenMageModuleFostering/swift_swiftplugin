@@ -80,7 +80,7 @@ class Swift_SwiftPlugin_Model_Observer
 					// collect item data and assign them to session
 					$productData = array();
 					foreach($items as $item) {
-							$productData[] = array('product' => $item->getProductId(), 'quantity' => $item->getQty(), 'price' => $item->getPrice());
+							$productData[] = array('product' => $item->getProductId(), 'quantity' => $item->getQty(), 'price' => $item->getPriceInclTax());
 					}
 					Mage::getSingleton('core/session')->setSwiftProductsList($productData);
 				}
