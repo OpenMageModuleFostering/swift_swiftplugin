@@ -5,7 +5,7 @@
     <modules>
         <!-- This must exactly match the namespace and module's folder names, with directory separators replaced by underscores -->
         <Swift_Swiftplugin>
-            <version>1.1.8</version>
+            <version>1.1.9</version>
         </Swift_Swiftplugin>
     </modules>
 	 <!-- Configure our module's behavior in the frontend scope -->
@@ -139,6 +139,15 @@
                     </swift>
                 </observers>
             </checkout_submit_all_after>
+			<sales_order_place_after>
+				<observers>
+                    <swift>
+                        <type>singleton</type>
+                        <class>Swift_Swiftplugin_Model_Observer</class>
+                        <method>flag_product_order_success</method>
+                    </swift>
+                </observers>
+			</sales_order_place_after>
 		</events>
 	</global>
 </config>

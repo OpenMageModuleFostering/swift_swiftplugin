@@ -23,7 +23,8 @@ class SwiftAPI
 	const OPERATION_SENDMAIL     = 'sendmail';
 	const OPERATION_UNSUBSCRIBE  = 'unsubscribe';
 
-	const SWIFTAPI_CRM_URL       = '//api.swiftcrm.net';
+	//const SWIFTAPI_CRM_URL       = '//api.swiftcrm.net';
+	const SWIFTAPI_CRM_URL       = '//swiftsystem.daniel.netready.lan';
 
 
 	//////////////////////////////////////////////////////////////////////////////
