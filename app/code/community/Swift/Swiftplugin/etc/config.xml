@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Swift_Swiftplugin>
-            <version>1.6.0</version>
+            <version>1.7.0</version>
         </Swift_Swiftplugin>
     </modules>
 	 <frontend>
@@ -77,6 +77,9 @@
 					<swift>
 						<table>swift_swiftplugin</table>
 					</swift>
+					<swiftorders>
+						<table>swift_orders</table>
+					</swiftorders>
 				</entities>
 			</swift_mysql4>
 		</models>

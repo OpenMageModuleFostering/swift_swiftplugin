@@ -18,7 +18,7 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 			$domain = $_SERVER['HTTP_HOST'];
 			$user = Mage::helper('swift/Data')->generateUserId();
 			$url = 'http:'.SwiftApi::SWIFTAPI_CRM_URL;
-			$limit = is_numeric($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : 500;
+			$limit = is_numeric($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : 50;
 			$offset = is_numeric($this->getRequest()->getParam('offset')) ? $this->getRequest()->getParam('offset') : 1;
 			$date = $this->getRequest()->getParam('date') ? $this->getRequest()->getParam('date') : date('Y-m-d');
 		
@@ -35,29 +35,42 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 			->setPageSize($limit)
 			->setOrder('created_at', 'ASC');
 				
+			$cacheCollection = Mage::getModel('swift/swiftorders')->getCollection()->addFieldToSelect('*');
+			$cacheData = $cacheCollection->getColumnValues('swift_order_id');
+			
 			if ($offset <= $orderCollection->getLastPageNumber()) {
 				
 				foreach($orderCollection as $order) {
 					
-					$visibleItems = $order->getAllVisibleItems();
-					$products = array();
-					
-					foreach($visibleItems as $order_item_key => $orderItem) {
-						$products[] = array('product' => $orderItem->getId(), 'price' => $orderItem->getPrice(), 'quantity' => $orderItem->getData('qty_ordered'));
+					if ($this->getRequest()->getParam('skip') || array_search($order->getId(), $cacheData) === false) {
+						
+						$visibleItems = $order->getAllVisibleItems();
+						$products = array();
+
+						foreach($visibleItems as $order_item_key => $orderItem) {
+							$products[] = array('product' => $orderItem->getId(), 'price' => $orderItem->getPrice(), 'quantity' => $orderItem->getData('qty_ordered'));
+						}
+
+						$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(), $order->getCustomerFirstname(), $order->getCustomerLastname(), $products, $order->getId(), null, null, $order->getCreatedAt());
+
+						$options = array (
+							'http' => array(
+								'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+								'method'  => 'POST',
+								'content' => SwiftAPI::Query($request, $key)
+							)
+						);
+	
+						$context  = stream_context_create($options);
+						file_get_contents($url, false, $context);
+						
+						if (isset($_GET['report'])) {
+							$data = array('swift_order_id' => $order->getId());
+							$model = Mage::getModel('swift/swiftorders')->setData($data); 
+							$model->save();
+						}
+						
 					}
-					
-					$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(), $order->getCustomerFirstname(), $order->getCustomerLastname(), $products, $order->getId(), null, null, $order->getCreatedAt());
-					
-					$options = array (
-						'http' => array(
-							'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-							'method'  => 'POST',
-							'content' => SwiftAPI::Query($request, $key)
-						)
-					);
-					
-					$context  = stream_context_create($options);
-					file_get_contents($url, false, $context);
 					
 				}
 				
@@ -85,6 +98,43 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 		}
 		
 		echo json_encode($response);
+		
+	}
+	
+	public function cacheAction() {
+		$limit = is_numeric($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : 50;
+		$offset = is_numeric($this->getRequest()->getParam('offset')) ? $this->getRequest()->getParam('offset') : 1;
+		
+		$cacheCollection = Mage::getModel('swift/swiftorders')
+			->getCollection()
+			->addFieldToSelect('*')
+			->setCurPage($offset)
+			->setPageSize($limit);
+		
+		$cache = array();
+		foreach($cacheCollection as $cacheItem) {
+			$cache[$cacheItem->getId()] = array($cacheItem->getSwiftOrderId() => $cacheItem->getCreated());
+		}
+		
+		echo json_encode($cache);
+	}
+	
+	public function deletecacheAction() {
+		if (($this->getRequest()->getParam('date') ? strtotime($this->getRequest()->getParam('date')) : false)) {
+			$date = $this->getRequest()->getParam('date');
+			$cacheCollection = Mage::getModel('swift/swiftorders')
+			->getCollection()
+			->addFieldToSelect('*')
+			->addFieldToFilter('created' , array('lteq' => date('Y-m-d', strtotime($date))));
+			
+			foreach($cacheCollection as $cacheItem) {
+				$cacheItem->delete();
+			}
+			echo json_encode(array('The cache has deleted from before '.$date.'.'));
+		}
+		else {
+			echo json_encode(array('Invalid parameters.'));
+		}
 		
 	}
 	
