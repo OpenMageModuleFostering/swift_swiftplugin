@@ -46,6 +46,8 @@ class Swift_Swiftplugin_Model_XmlProduct {
 		$xmlRow = array();
 		$xml = new xml();
 		
+		$today = time();
+		
 		if ($this->offset <= $productCollection->getLastPageNumber()) {
 		
 			foreach ($productCollection as $product) {

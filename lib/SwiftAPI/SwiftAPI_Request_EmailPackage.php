@@ -9,6 +9,7 @@ class SwiftAPI_Request_EmailPackage extends SwiftAPI_Request {
 	public $emailPackage;
 	public $site;
 	public $is_mail_function;
+	public $timeDebug;
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -19,11 +20,12 @@ class SwiftAPI_Request_EmailPackage extends SwiftAPI_Request {
 	// Public: __construct()
 	////////////////////////
 
-	public function __construct($domain, $user, $site, $emailPackage, $is_mail_function = false, $version = NULL, $date = NULL)
+	public function __construct($domain, $user, $site, $emailPackage, $is_mail_function = false, $version = NULL, $date = NULL, $timeDebug = false)
 		{
 		$this -> emailPackage = $emailPackage;
 		$this -> site = $site;
 		$this->is_mail_function = $is_mail_function;
+		$this->timeDebug = $timeDebug;
 		parent::__construct($domain, SwiftAPI::OPERATION_EMAILPACKAGE, $user, $version, $date);
 		}
 		
