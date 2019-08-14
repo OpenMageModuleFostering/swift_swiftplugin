@@ -54,34 +54,37 @@ abstract class SwiftAPI_Request
 		{
 		switch($fields -> operation)
 			{
-			case SwiftAPI::OPERATION_HOME:
-				return SwiftAPI_Request_Home::Create($fields);
-
-			case SwiftAPI::OPERATION_PRODUCT:
-				return SwiftAPI_Request_Product::Create($fields);
-
-			case SwiftAPI::OPERATION_CART:
-				return SwiftAPI_Request_Cart::Create($fields);
-
-			case SwiftAPI::OPERATION_ORDER:
-				return SwiftAPI_Request_Order::Create($fields);
-
-			case SwiftAPI::OPERATION_PASTORDER:
-				return SwiftAPI_Request_PastOrder::Create($fields);
-
-			case SwiftAPI::OPERATION_SUBSCRIPTION:
-				return SwiftAPI_Request_Subscription::Create($fields);
-
-			case SwiftAPI::OPERATION_VIEWMAIL:
-				return SwiftAPI_Request_ViewMail::Create($fields);
-
-			case SwiftAPI::OPERATION_SENDMAIL:
-				return SwiftAPI_Request_SendMail::Create($fields);
-			case SwiftAPI::OPERATION_UNSUBSCRIBE:
-				return SwiftAPI_Request_Unsubscribe::Create($fields);
-
-			default:
-				throw new SwiftAPI_Exception('SwiftAPI_Request::Create(): Invalid operation: "' . $fields -> operation . '".');
+				case SwiftAPI::OPERATION_PING:
+					return SwiftAPI_Request_Ping::Create($fields);
+					
+				case SwiftAPI::OPERATION_HOME:
+					return SwiftAPI_Request_Home::Create($fields);
+					
+				case SwiftAPI::OPERATION_PRODUCT:
+					return SwiftAPI_Request_Product::Create($fields);
+	
+				case SwiftAPI::OPERATION_CART:
+					return SwiftAPI_Request_Cart::Create($fields);
+	
+				case SwiftAPI::OPERATION_ORDER:
+					return SwiftAPI_Request_Order::Create($fields);
+	
+				case SwiftAPI::OPERATION_PASTORDER:
+					return SwiftAPI_Request_PastOrder::Create($fields);
+	
+				case SwiftAPI::OPERATION_SUBSCRIPTION:
+					return SwiftAPI_Request_Subscription::Create($fields);
+	
+				case SwiftAPI::OPERATION_VIEWMAIL:
+					return SwiftAPI_Request_ViewMail::Create($fields);
+	
+				case SwiftAPI::OPERATION_SENDMAIL:
+					return SwiftAPI_Request_SendMail::Create($fields);
+				case SwiftAPI::OPERATION_UNSUBSCRIBE:
+					return SwiftAPI_Request_Unsubscribe::Create($fields);
+					
+				default:
+					throw new SwiftAPI_Exception('SwiftAPI_Request::Create(): Invalid operation: "' . $fields -> operation . '".');
 			}
 		}
 

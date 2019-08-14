@@ -25,14 +25,6 @@ class Swift_Swiftplugin_Block_Adminhtml_Swift_Edit_Tab_Form extends Mage_Adminht
 			$form->setValues($data);
 		}
 		
-		
-		$fieldset->addField('swift_send_history', 'checkbox' , array(
-			'label' => 'Send information about past orders to SwiftCRM',
-			'name' => 'swift_send_history',
-			'value' => '1',
-			'checked' => true
-		))->setIsChecked(empty($data) || $data['swift_send_history'] == 1);
-		
 		return parent::_prepareForm();
 	}
 }

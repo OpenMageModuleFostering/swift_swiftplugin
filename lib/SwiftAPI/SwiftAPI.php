@@ -13,15 +13,16 @@ class SwiftAPI
 
 	const VERSION = 2;
 
-	const OPERATION_HOME         = 'home';
-	const OPERATION_PRODUCT      = 'product';
-	const OPERATION_CART         = 'cart';
-	const OPERATION_ORDER        = 'order';
-	const OPERATION_PASTORDER    = 'pastorder';
-	const OPERATION_SUBSCRIPTION = 'subscription';
-	const OPERATION_VIEWMAIL     = 'viewmail';
-	const OPERATION_SENDMAIL     = 'sendmail';
-	const OPERATION_UNSUBSCRIBE  = 'unsubscribe';
+	const OPERATION_HOME        = 'home';
+	const OPERATION_PRODUCT     = 'product';
+	const OPERATION_CART        = 'cart';
+	const OPERATION_ORDER       = 'order';
+	const OPERATION_PASTORDER   = 'pastorder';
+	const OPERATION_SUBSCRIPTION= 'subscription';
+	const OPERATION_VIEWMAIL    = 'viewmail';
+	const OPERATION_SENDMAIL    = 'sendmail';
+	const OPERATION_UNSUBSCRIBE = 'unsubscribe';
+	const OPERATION_PING		= 'ping';
 
 	const SWIFTAPI_CRM_URL       = '//api.swiftcrm.net';
 
@@ -45,7 +46,7 @@ class SwiftAPI
 
 		// Encrypt data and trim trailing NULL bytes.
 		$data = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $json, MCRYPT_MODE_CBC, $iv);
-
+		
 		// Base64 encode message.
 		if(!($msg = base64_encode($iv . $data)))
 			throw new SwiftAPI_Exception('SwiftAPI::Encode(): Failed to base64 encode message.');
@@ -110,9 +111,9 @@ class SwiftAPI
 	// Public: Link()
 	/////////////////
 
-	public static function Link(SwiftAPI_Request $request, $key, $content)
+	public static function Link(SwiftAPI_Request $request, $key, $content, Site $site)
 		{
-		return '<a href="' . self::SWIFTAPI_CRM_URL . '?' . self::Query($request, $key) . '">' . $content . '</a>';
+		return '<a href="'. $site->getSslUrl() . self::SWIFTAPI_CRM_URL . '?' . self::Query($request, $key) . '">' . $content . '</a>';
 		}
 
 

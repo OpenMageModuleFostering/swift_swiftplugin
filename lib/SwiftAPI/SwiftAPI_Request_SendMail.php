@@ -16,6 +16,7 @@ class SwiftAPI_Request_SendMail extends SwiftAPI_Request
 	public $subject;
 	public $body;
 	public $monitor;
+	public $emailId;
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -26,12 +27,20 @@ class SwiftAPI_Request_SendMail extends SwiftAPI_Request
 	// Public: __construct()
 	////////////////////////
 
-	public function __construct($domain, $user, $email, $subject, $body, $version = NULL, $date = NULL, $monitor = null)
+	public function __construct($domain, $user, $email, $subject, $body, $emailId, $version = NULL, $date = NULL, $monitor = null)
 		{
 		$this -> email   = $email;
 		$this -> subject = $subject;
 		$this -> body    = $body;
 		$this->monitor = $monitor;
+		
+		if ($emailId == 0) {
+			$this->emailId = null;
+		}
+		else {
+			$this->emailId = $emailId;
+		}
+		
 		parent::__construct($domain, SwiftAPI::OPERATION_SENDMAIL, $user, $version, $date);
 		}
 
@@ -60,6 +69,7 @@ class SwiftAPI_Request_SendMail extends SwiftAPI_Request
 			$fields -> email,
 			$fields -> subject,
 			$fields -> body,
+			$fields -> emailId,
 			$fields -> version,
 			$fields -> date,
 			$fields -> monitor
