@@ -12,6 +12,7 @@ require_once('SwiftAPI_Request_PastOrder.php');
 require_once('SwiftAPI_Request_Subscription.php');
 require_once('SwiftAPI_Request_ViewMail.php');
 require_once('SwiftAPI_Request_SendMail.php');
+require_once('SwiftAPI_Request_EmailPackage.php');
 
 
 abstract class SwiftAPI_Request
@@ -82,7 +83,8 @@ abstract class SwiftAPI_Request
 					return SwiftAPI_Request_SendMail::Create($fields);
 				case SwiftAPI::OPERATION_UNSUBSCRIBE:
 					return SwiftAPI_Request_Unsubscribe::Create($fields);
-					
+				case SwiftAPI::OPERATION_EMAILPACKAGE:
+					return SwiftAPI_Request_EmailPackage::Create($fields);
 				default:
 					throw new SwiftAPI_Exception('SwiftAPI_Request::Create(): Invalid operation: "' . $fields -> operation . '".');
 			}

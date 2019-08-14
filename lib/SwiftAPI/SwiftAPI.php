@@ -23,6 +23,7 @@ class SwiftAPI
 	const OPERATION_SENDMAIL    = 'sendmail';
 	const OPERATION_UNSUBSCRIBE = 'unsubscribe';
 	const OPERATION_PING		= 'ping';
+	const OPERATION_EMAILPACKAGE = 'emailpackage';
 
 	const SWIFTAPI_CRM_URL       = '//api.swiftcrm.net';
 
@@ -46,7 +47,7 @@ class SwiftAPI
 
 		// Encrypt data and trim trailing NULL bytes.
 		$data = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $json, MCRYPT_MODE_CBC, $iv);
-		
+
 		// Base64 encode message.
 		if(!($msg = base64_encode($iv . $data)))
 			throw new SwiftAPI_Exception('SwiftAPI::Encode(): Failed to base64 encode message.');
@@ -155,6 +156,38 @@ class SwiftAPI
 			</script>';
 		}
 
+		public static function BareScript($request, $key)
+		{
+			return '
+			window.onload = function()
+				{
+				var query = "' . SwiftAPI::Query($request, $key) . '";
+				var http;
+		
+				// IE7+, Firefox, Chrome, Opera, Safari.
+				if(window.XMLHttpRequest)
+					http=new XMLHttpRequest();
+		
+				// IE6, IE5.
+				else
+					http=new ActiveXObject("Microsoft.XMLHTTP");
+		
+				http.open("POST","'. self::SWIFTAPI_CRM_URL .'", true);
+		
+				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				http.setRequestHeader("Content-length", query.length);
+				http.setRequestHeader("Connection", "close");
+		
+				http.onreadystatechange= function()
+					{
+					if (http.readyState==4 && http.status==200)
+						console.log("success");
+					}
+		
+				http.send(query);
+				}
+			';
+		}
 
 	////////////////////////////////////
 	// Public: UserID()
