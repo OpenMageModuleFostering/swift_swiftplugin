@@ -88,7 +88,7 @@ class Swift_Swiftplugin_Model_XmlProduct {
 					$tempXml[] = xml::subcategory(is_null($category->getName()) ? '' : htmlspecialchars($category->getName(), ENT_QUOTES));
 					$pCategory = Mage::getModel('catalog/category')->load($category->getParentId());
 					$tempXml[] = xml::parentcategory(is_null($pCategory->getName()) ? '' : htmlspecialchars($pCategory->getName(), ENT_QUOTES));
-					$tempXml[] = xml::sku(is_null($product->getSku()) ? null : $product->getSku());
+					$tempXml[] = xml::sku(is_null($product->getSku()) ? null : htmlspecialchars($product->getSku(), ENT_QUOTES));
 					$xmlRow[] = xml::product(implode("",$tempXml));
 					
 				}

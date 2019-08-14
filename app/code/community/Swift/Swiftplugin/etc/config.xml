@@ -5,7 +5,7 @@
     <modules>
         <!-- This must exactly match the namespace and module's folder names, with directory separators replaced by underscores -->
         <Swift_Swiftplugin>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
         </Swift_Swiftplugin>
     </modules>
 	 <!-- Configure our module's behavior in the frontend scope -->
