@@ -15,7 +15,7 @@ class Swift_Swiftplugin_Model_XmlProduct {
 	public function generate_xml() {
 		//limit the data parsed
 		$limit = 100;
-		$productCollection = Mage::getModel('catalog/product')->getCollection()->addAttributeToSelect(array('product_id','name','description', 'short_description','price','url_path','image','thumbnail', 'small_image','special_price','sku'))->setPageSize($limit);	
+		$productCollection = Mage::getModel('catalog/product')->getCollection()->addAttributeToSelect(array('product_id','name','description','price','url_path','image','thumbnail','special_price'))->setPageSize($limit);	
 		$xmlRow = array();
 		for ($i = 1; $i <= $productCollection->getLastPageNumber(); $i++) {
 			if ($productCollection->isLoaded()) {
@@ -30,12 +30,9 @@ class Swift_Swiftplugin_Model_XmlProduct {
 				$tempXml[] = xml::$method($product->getId());
 				$tempXml[] = xml::title(htmlspecialchars($product->getName(), ENT_QUOTES));
 				$tempXml[] = xml::description(htmlspecialchars($product->getDescription(), ENT_QUOTES));
-				$tempXml[] = xml::short_description(htmlspecialchars($product->getShortDescription(), ENT_QUOTES));
 				$tempXml[] = xml::link($product->getProductUrl());
 				$method = 'g:image_link';
 				$tempXml[] = xml::$method($product->getImage() == 'no_selection' ? '' : Mage::getModel('catalog/product_media_config')->getMediaUrl($product->getImage()));
-				$method = 'g:small_image_link';
-				$tempXml[] = xml::$method($product->getSmallImage() == 'no_selection' ? '' : Mage::getModel('catalog/product_media_config')->getMediaUrl($product->getSmallImage()));
 				$method = 'g:additional_image_link';
 				$tempXml[] = xml::$method($product->getThumbnail() == 'no_selection' ? '' : Mage::getModel('catalog/product_media_config')->getMediaUrl($product->getThumbnail()));
 				$method = 'g:price';
@@ -48,20 +45,13 @@ class Swift_Swiftplugin_Model_XmlProduct {
 				$tempXml[] = xml::subcategory(is_null($category->getName()) ? '' : htmlspecialchars($category->getName(), ENT_QUOTES));
 				$pCategory = Mage::getModel('catalog/category')->load($category->getParentId());
 				$tempXml[] = xml::parentcategory(is_null($pCategory->getName()) ? '' : htmlspecialchars($pCategory->getName(), ENT_QUOTES));
-				$tempXml[] = xml::sku(is_null($product->getSku()) ? null : $product->getSku());
 				$xmlRow[] = xml::product(implode("",$tempXml));
-				
 			}
 		}
 
-		if (isset($_GET['version'])) {
-			echo (string) Mage::helper('swift/Data')->getExtensionInformation();
-		}
-		else {
-			header('Content-Type: application/xml; charset=utf-8');
-			echo '<?xml version="1.0" encoding="UTF-8"?>'. "\n" . xml::urlset(xml::products(implode('',$xmlRow)), array('xmlns:g' => "http://base.google.com/ns/1.0"));
-			die();
-		}
+		header('Content-Type: application/xml; charset=utf-8');
+		echo '<?xml version="1.0" encoding="UTF-8"?>'. "\n" . xml::urlset(xml::products(implode('',$xmlRow)), array('xmlns:g' => "http://base.google.com/ns/1.0"));
+		die();
 	}
 }
 

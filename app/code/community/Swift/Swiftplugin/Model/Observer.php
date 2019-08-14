@@ -56,7 +56,7 @@ class Swift_SwiftPlugin_Model_Observer
 	* Flags the order was a success and collects data about the user and their order to pass into SwiftApi
 	*/
 	public function flag_product_order_success(Varien_Event_Observer $observer) {
-		// make checks in case something goes in as null
+        // make checks in case something goes in as null
 		if (!is_null($observer)) {
 			$event = $observer->getEvent();
 			if (!is_null($event)) {

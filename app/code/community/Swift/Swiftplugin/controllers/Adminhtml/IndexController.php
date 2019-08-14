@@ -1,7 +1,6 @@
 <?php
 
 require_once(Mage::getBaseDir('lib')  . '/SwiftAPI/SwiftAPI.php');
-require_once(Mage::getBaseDir('lib')  . '/SwiftAPI/SwiftAPI_Request_Ping.php');
 
 /**
  * Administration of swift plugin
@@ -63,8 +62,7 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 						$postData['swift_send_history'] = isset($postData['swift_send_history']) ? '1' : '0';
 						$testModel->addData($postData)->setId($this->getRequest()->getParam('id'))->save();
 						Mage::getSingleton('adminhtml/session')->addSuccess('successfully saved');
-						// if successful ping send past orders to swiftcrm
-						if ($this->pingSwiftSystem($postData['swift_private_key']) == 1) {
+						if ($postData['swift_send_history'] == 1) {
 							$this->_forward('pastproduct');
 						}
 					}
@@ -107,7 +105,7 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 	}
 	
 	/**
-	 *	Send Past orders to Swiftcrm
+	 *	Send Past orders to Swift
 	 */
 	public function pastproductAction() {
 	
@@ -120,6 +118,7 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 		
 			$orderCollection = Mage::getModel('sales/order')->getCollection()
 			->addAttributeToFilter('created_at' , array('gt' => date('Y-m-d H:i:s', strtotime('-2 years'))));
+		
 			foreach($orderCollection as $order_key => $order) {
 				$visibleItems = $order->getAllVisibleItems();
 				$products = array();
@@ -127,7 +126,6 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 					$products[] = array('product' => $orderItem->getId(), 'price' => $orderItem->getPrice(), 'quantity' => $orderItem->getData('qty_ordered'));
 				}
 				$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(),$order->getCustomerFirstname(), $order->getCustomerLastname(), $products);
-				
 				$options = array (
 					'http' => array(
 						'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -146,26 +144,6 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 			Mage::getSingleton('adminhtml/session')->addError('You cannot perform this operation as you have not registered your private key with swift');
 		}
 		$this->_redirect('*/*/');		
-	}
-	
-	
-	public function pingSwiftSystem($key) {
-		$domain = $_SERVER['HTTP_HOST'];
-		$user = Mage::helper('swift/Data')->generateUserId();
-		$url = 'http:'.SwiftApi::SWIFTAPI_CRM_URL;
-		$request = new SwiftAPI_Request_Ping($domain, $user, $key);
-		$options = array (
-			'http' => array(
-				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-				'method'  => 'POST',
-				'content' => SwiftAPI::Query($request, hex2bin($key))
-			)
-		);
-		
-		$context  = stream_context_create($options);
-		$result = file_get_contents($url, false, $context);
-		return $result;
-		// optional extra: send proper feedback to plugin in case something goes wrong with their setup
 	}
 }
 

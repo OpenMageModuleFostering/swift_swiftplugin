@@ -49,17 +49,6 @@ class Swift_Swiftplugin_Helper_Data extends Mage_Core_Helper_Abstract {
                 }
                 return $data;
         }
-		
-		/**
-		* For Debugging
-		*/
-		public function getExtensionInformation() {
-			$str = '';
-			if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-				$str = 'working over https';
-			}
-			return (string) Mage::getConfig()->getNode()->modules->Swift_Swiftplugin->version .'<br/>'. $_SERVER['HTTP_HOST'] .'<br/>'.$str;
-		}
 }
 
 ?>

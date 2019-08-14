@@ -13,17 +13,15 @@ class SwiftAPI
 
 	const VERSION = 2;
 
-	const OPERATION_HOME        = 'home';
-	const OPERATION_PRODUCT     = 'product';
-	const OPERATION_CART        = 'cart';
-	const OPERATION_ORDER       = 'order';
-	const OPERATION_PASTORDER   = 'pastorder';
-	const OPERATION_SUBSCRIPTION= 'subscription';
-	const OPERATION_VIEWMAIL    = 'viewmail';
-	const OPERATION_SENDMAIL    = 'sendmail';
-	const OPERATION_UNSUBSCRIBE = 'unsubscribe';
-	const OPERATION_PING		= 'ping';
-	const OPERATION_EMAILPACKAGE = 'emailpackage';
+	const OPERATION_HOME         = 'home';
+	const OPERATION_PRODUCT      = 'product';
+	const OPERATION_CART         = 'cart';
+	const OPERATION_ORDER        = 'order';
+	const OPERATION_PASTORDER    = 'pastorder';
+	const OPERATION_SUBSCRIPTION = 'subscription';
+	const OPERATION_VIEWMAIL     = 'viewmail';
+	const OPERATION_SENDMAIL     = 'sendmail';
+	const OPERATION_UNSUBSCRIBE  = 'unsubscribe';
 
 	const SWIFTAPI_CRM_URL       = '//api.swiftcrm.net';
 
@@ -112,9 +110,9 @@ class SwiftAPI
 	// Public: Link()
 	/////////////////
 
-	public static function Link(SwiftAPI_Request $request, $key, $content, Site $site)
+	public static function Link(SwiftAPI_Request $request, $key, $content)
 		{
-		return '<a href="'. $site->getSslUrl() . self::SWIFTAPI_CRM_URL . '?' . self::Query($request, $key) . '">' . $content . '</a>';
+		return '<a href="' . self::SWIFTAPI_CRM_URL . '?' . self::Query($request, $key) . '">' . $content . '</a>';
 		}
 
 
@@ -156,38 +154,6 @@ class SwiftAPI
 			</script>';
 		}
 
-		public static function BareScript($request, $key)
-		{
-			return '
-			window.onload = function()
-				{
-				var query = "' . SwiftAPI::Query($request, $key) . '";
-				var http;
-		
-				// IE7+, Firefox, Chrome, Opera, Safari.
-				if(window.XMLHttpRequest)
-					http=new XMLHttpRequest();
-		
-				// IE6, IE5.
-				else
-					http=new ActiveXObject("Microsoft.XMLHTTP");
-		
-				http.open("POST","'. self::SWIFTAPI_CRM_URL .'", true);
-		
-				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				http.setRequestHeader("Content-length", query.length);
-				http.setRequestHeader("Connection", "close");
-		
-				http.onreadystatechange= function()
-					{
-					if (http.readyState==4 && http.status==200)
-						console.log("success");
-					}
-		
-				http.send(query);
-				}
-			';
-		}
 
 	////////////////////////////////////
 	// Public: UserID()
