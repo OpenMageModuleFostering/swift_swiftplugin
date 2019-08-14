@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- The root node for Magento module configuration -->
 <config>
-    <!-- The module's node contains basic information about each Magento module -->
     <modules>
-        <!-- This must exactly match the namespace and module's folder names, with directory separators replaced by underscores -->
         <Swift_Swiftplugin>
-            <version>1.3.3</version>
+            <version>1.4.0</version>
         </Swift_Swiftplugin>
     </modules>
-	 <!-- Configure our module's behavior in the frontend scope -->
 	 <frontend>
 		<routers>
 			<swift>
@@ -27,7 +23,6 @@
 			</updates>
 		</layout>
 	</frontend>
-	<!-- Configure our module's behavior in the admin scope -->
 	<admin>
 		<routers>
 			<swift>
@@ -39,7 +34,6 @@
 			</swift>
 		</routers>
 	</admin>
-	<!-- admin html -->
 	<adminhtml>
 		<layout>
 			<updates>
@@ -86,30 +80,24 @@
 				</entities>
 			</swift_mysql4>
 		</models>
-		<!-- allow the plugin to read and write -->
 		<resources>
-			<!-- Sets up database table, when it is first installed this script is ran -->
 			<swift_setup>
 				<setup>
 					<module>Swift_Swiftplugin</module>
 				</setup>
 			</swift_setup>
-			<!-- connection to write -->
 			<swift_write>
 				<connection>
 					<use>core_write</use>
 				</connection>
 			</swift_write>
-			<!-- connection to read -->
 			<swift_read>
 				<connection>
 					<use>core_read</use>
 				</connection>
 			</swift_read>
 		</resources>
-		<!-- Set observer methods -->
 		  <events>
-		  <!-- check out when a product is added to the cart -->
 		  <checkout_cart_add_product_complete>
 				<observers>
 				  <swift>
@@ -119,7 +107,6 @@
 				  </swift>
 				</observers>
 		  </checkout_cart_add_product_complete>
-		  <!-- check out when a user has subscribed -->
 			<newsletter_subscriber_save_after>
 				<observers>
 				  <swift>
@@ -129,7 +116,6 @@
 				  </swift>
 				</observers>
 			</newsletter_subscriber_save_after>
-			<!-- check out when an order has been made -->
 			 <checkout_submit_all_after>
                 <observers>
                     <swift>

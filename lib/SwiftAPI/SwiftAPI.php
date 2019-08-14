@@ -142,8 +142,6 @@ class SwiftAPI
 				http.open("POST","'. self::SWIFTAPI_CRM_URL .'", true);
 
 				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				http.setRequestHeader("Content-length", query.length);
-				http.setRequestHeader("Connection", "close");
 
 				http.onreadystatechange= function()
 					{

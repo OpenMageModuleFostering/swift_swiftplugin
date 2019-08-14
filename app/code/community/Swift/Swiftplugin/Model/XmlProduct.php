@@ -96,14 +96,9 @@ class Swift_Swiftplugin_Model_XmlProduct {
 			}
 		}
 
-		if (isset($_GET['version'])) {
-			echo (string) Mage::helper('swift/Data')->getExtensionInformation();
-		}
-		else {
-			header('Content-Type: application/xml; charset=utf-8');
-			echo '<?xml version="1.0" encoding="UTF-8"?>'. "\n" . xml::urlset(xml::products(implode('',$xmlRow)), array('xmlns:g' => "http://base.google.com/ns/1.0"));
-			die();
-		}
+		header('Content-Type: application/xml; charset=utf-8');
+		echo '<?xml version="1.0" encoding="UTF-8"?>'. "\n" . xml::urlset(xml::products(implode('',$xmlRow)), array('xmlns:g' => "http://base.google.com/ns/1.0"));
+		die();
 	}
 }
 

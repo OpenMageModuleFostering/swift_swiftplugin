@@ -60,13 +60,9 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 				$existingModels = Mage::getModel('swift/swift')->getCollection();
 				if (count($existingModels) == 0 || $this->getRequest()->getParam('id')) {
 					if  (ctype_xdigit ($postData['swift_private_key']) && strlen($postData['swift_private_key']) == 64) {
-						$postData['swift_send_history'] = isset($postData['swift_send_history']) ? '1' : '0';
 						$testModel->addData($postData)->setId($this->getRequest()->getParam('id'))->save();
+						$this->pingSwiftSystem($postData['swift_private_key']);
 						Mage::getSingleton('adminhtml/session')->addSuccess('successfully saved');
-						// if successful ping send past orders to swiftcrm
-						if ($this->pingSwiftSystem($postData['swift_private_key']) == 1) {
-							$this->_forward('pastproduct');
-						}
 					}
 					else {
 						throw new Exception('Invalid string input');
@@ -105,49 +101,6 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 		}
 		$this->_redirect('*/*/');
 	}
-	
-	/**
-	 *	Send Past orders to Swiftcrm
-	 */
-	public function pastproductAction() {
-	
-		$key = hex2bin(Mage::helper('swift/Data')->getSwiftPrivateKey());
-		if (!is_bool($key) && !is_null($key)) {
-			$version = Mage::getConfig()->getNode()->modules->Swift_Swiftplugin->version;
-			$domain = $_SERVER['HTTP_HOST'];
-			$user = Mage::helper('swift/Data')->generateUserId();
-			$url = 'http:'.SwiftApi::SWIFTAPI_CRM_URL;
-		
-			$orderCollection = Mage::getModel('sales/order')->getCollection()
-			->addAttributeToFilter('created_at' , array('gt' => date('Y-m-d H:i:s', strtotime('-2 years'))));
-			foreach($orderCollection as $order_key => $order) {
-				$visibleItems = $order->getAllVisibleItems();
-				$products = array();
-				foreach($visibleItems as $order_item_key => $orderItem) {
-					$products[] = array('product' => $orderItem->getId(), 'price' => $orderItem->getPrice(), 'quantity' => $orderItem->getData('qty_ordered'));
-				}
-				$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(),$order->getCustomerFirstname(), $order->getCustomerLastname(), $products);
-				
-				$options = array (
-					'http' => array(
-						'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-						'method'  => 'POST',
-						'content' => SwiftAPI::Query($request, $key)
-					)
-				);
-
-				$context  = stream_context_create($options);
-				$result = file_get_contents($url, false, $context);
-				echo $result;
-			}
-			Mage::getSingleton('adminhtml/session')->addSuccess('Past orders successfully sent to swift');
-		}
-		else {
-			Mage::getSingleton('adminhtml/session')->addError('You cannot perform this operation as you have not registered your private key with swift');
-		}
-		$this->_redirect('*/*/');		
-	}
-	
 	
 	public function pingSwiftSystem($key) {
 		$domain = $_SERVER['HTTP_HOST'];
