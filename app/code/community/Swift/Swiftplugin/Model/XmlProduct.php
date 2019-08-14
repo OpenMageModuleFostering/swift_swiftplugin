@@ -15,7 +15,7 @@ class Swift_Swiftplugin_Model_XmlProduct {
 	public function generate_xml() {
 		//limit the data parsed
 		$limit = 100;
-		$productCollection = Mage::getModel('catalog/product')->getCollection()->addAttributeToSelect(array('product_id','name','description', 'short_description','price','url_path','image','thumbnail', 'small_image','special_price'))->setPageSize($limit);	
+		$productCollection = Mage::getModel('catalog/product')->getCollection()->addAttributeToSelect(array('product_id','name','description', 'short_description','price','url_path','image','thumbnail', 'small_image','special_price','sku'))->setPageSize($limit);	
 		$xmlRow = array();
 		for ($i = 1; $i <= $productCollection->getLastPageNumber(); $i++) {
 			if ($productCollection->isLoaded()) {
@@ -48,6 +48,7 @@ class Swift_Swiftplugin_Model_XmlProduct {
 				$tempXml[] = xml::subcategory(is_null($category->getName()) ? '' : htmlspecialchars($category->getName(), ENT_QUOTES));
 				$pCategory = Mage::getModel('catalog/category')->load($category->getParentId());
 				$tempXml[] = xml::parentcategory(is_null($pCategory->getName()) ? '' : htmlspecialchars($pCategory->getName(), ENT_QUOTES));
+				$tempXml[] = xml::sku(is_null($product->getSku()) ? null : $product->getSku());
 				$xmlRow[] = xml::product(implode("",$tempXml));
 				
 			}
