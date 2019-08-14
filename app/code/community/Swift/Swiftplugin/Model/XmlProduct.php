@@ -36,9 +36,10 @@ class Swift_Swiftplugin_Model_XmlProduct {
 				$stock_item = Mage::getModel('cataloginventory/stock_item')->loadByProduct( $product->getId() );
 				
 				$qty = $stock_item->getData('qty');
+				$manageStock = $stock_item->getData('manage_stock');
 				$inStock = $stock_item->getData('is_in_stock');
 				
-				if(!( $qty<1 || $inStock == 0)) {
+				if(!($manageStock == 1 && ($qty<1 || $inStock == 0))) {
 				
 				
 					$tempXml = array();
