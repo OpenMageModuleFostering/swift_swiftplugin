@@ -7,7 +7,7 @@ class Swift_Swiftplugin_Block_Adminhtml_Swift_Edit_Tab_Form extends Mage_Adminht
 	protected function _prepareForm() {
 		$form = new Varien_Data_Form();
 		$this->setForm($form);
-		$fieldset = $form->addFieldset('swift_register_key_form', array('legend'=>'Insert SwiftCRM Private Key'));
+		$fieldset = $form->addFieldset('swift_register_key_form', array('legend'=>'Insert SwiftERM Private Key'));
 		$fieldset->addField('swift_private_key', 'text',
 				array(
 					'label' => 'Private Key',

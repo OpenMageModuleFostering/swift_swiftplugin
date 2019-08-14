@@ -3,7 +3,7 @@
     "type": "magento-module",
     "license": "LGPL",
     "homepage": "",
-    "description": "Uses the SwiftCRM marketing service to send customers emails based on their shopping history and purchases.",
+    "description": "Uses the SwiftERM marketing service to send customers emails based on their shopping history and purchases.",
     "authors": [
     {
         "name": "Simon Cooper",
