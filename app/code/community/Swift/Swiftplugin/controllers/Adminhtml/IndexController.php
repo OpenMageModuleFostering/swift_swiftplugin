@@ -105,18 +105,34 @@ class Swift_Swiftplugin_Adminhtml_IndexController extends Mage_Adminhtml_Control
 	public function pingSwiftSystem($key) {
 		$domain = $_SERVER['HTTP_HOST'];
 		$user = Mage::helper('swift/Data')->generateUserId();
-		$url = 'http:'.SwiftApi::SWIFTAPI_CRM_URL;
+		$url = 'http:'.SwiftApi::SWIFTAPI_CRM_URL;		
 		$request = new SwiftAPI_Request_Ping($domain, $user, $key);
-		$options = array (
-			'http' => array(
-				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-				'method'  => 'POST',
-				'content' => SwiftAPI::Query($request, Mage::helper('swift/Data')->_hex2bin($key))
-			)
-		);
 		
-		$context  = stream_context_create($options);
-		$result = file_get_contents($url, false, $context);
+		if (Mage::helper('swift/Data')->_isCurl()) {
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-type: application/x-www-form-urlencoded"));
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, SwiftAPI::Query($request, Mage::helper('swift/Data')->_hex2bin($key)));			
+			$result = curl_exec($curl);
+		}
+		else {
+				
+			$options = array (
+				'http' => array(
+					'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+					'method'  => 'POST',
+					'content' => SwiftAPI::Query($request, Mage::helper('swift/Data')->_hex2bin($key))
+				)
+			);
+		
+			$context  = stream_context_create($options);
+			$result = file_get_contents($url, false, $context);
+				
+		}
+		
 		return $result;
 		// optional extra: send proper feedback to plugin in case something goes wrong with their setup
 	}

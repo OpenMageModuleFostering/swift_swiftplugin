@@ -55,16 +55,33 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 
 						$request = new SwiftAPI_Request_PastOrder($domain, $user, $order->getCustomerEmail(), $order->getCustomerFirstname(), $order->getCustomerLastname(), $products, $order->getId(), null, null, $order->getCreatedAt());
 
-						$options = array (
-							'http' => array(
-								'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-								'method'  => 'POST',
-								'content' => SwiftAPI::Query($request, $key)
-							)
-						);
-	
-						$context  = stream_context_create($options);
-						file_get_contents($url, false, $context);
+						// is curl available
+						if (Mage::helper('swift/Data')->_isCurl()) {
+							// init curl
+							$curl = curl_init();
+							curl_setopt($curl, CURLOPT_URL, $url);
+							curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+							curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-type: application/x-www-form-urlencoded"));
+							curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+							curl_setopt($curl, CURLOPT_POST, 1);
+							curl_setopt($curl, CURLOPT_POSTFIELDS, SwiftAPI::Query($request, $key));			
+							$result = curl_exec($curl);
+							
+						}
+						else {
+							// try file get contents
+							$options = array (
+								'http' => array(
+									'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+									'method'  => 'POST',
+									'content' => SwiftAPI::Query($request, $key)
+								)
+							);
+			
+							$context  = stream_context_create($options);
+							$result = file_get_contents($url, false, $context);
+							
+						}
 						
 						if (isset($_GET['report'])) {
 							$data = array('swift_order_id' => $order->getId());
@@ -80,11 +97,13 @@ class Swift_Swiftplugin_OrdersController extends Mage_Core_Controller_Front_Acti
 					$response = array();
 					$response['status'] = 3;
 					$response['message'] = 'No more orders to send at this time, but has not fetched a full '. $limit;
+					$response['result'] = $result;
 				}
 				else {
 					$response = array();
-					$response['status'] =  1; 
+					$response['status'] =  1;
 					$response['message'] = 'Past orders successfully sent to swift';
+					$response['result'] = $result;
 				}
 			}
 			else {
