@@ -26,7 +26,13 @@ class xml
 		{
 		return self::createElement($name, array_shift($args), array_shift($args));
 		}
-
+		
+	/**
+	* PHP 5.2 support
+	*/
+	public function __call($name, array $args = NULL) {
+		return self::createElement($name, array_shift($args), array_shift($args));
+	}
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Private methods
