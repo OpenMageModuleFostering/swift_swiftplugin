@@ -15,7 +15,7 @@ class Swift_Swiftplugin_Model_XmlProduct {
 	public function generate_xml() {
 		//limit the data parsed
 		$limit = 100;
-		$productCollection = Mage::getModel('catalog/product')->getCollection()->addAttributeToSelect(array('product_id','name','description', 'short_description','price','url_path','image','thumbnail', 'small_image','special_price','sku'))->setPageSize($limit);	
+		$productCollection = Mage::getModel('catalog/product')->getCollection()->addAttributeToSelect(array('product_id','name','description', 'short_description','price','url_path','image','thumbnail', 'small_image','special_price','sku','special_to_date', 'special_from_date'))->setPageSize($limit);	
 		$xmlRow = array();
 		for ($i = 1; $i <= $productCollection->getLastPageNumber(); $i++) {
 			if ($productCollection->isLoaded()) {
@@ -57,7 +57,18 @@ class Swift_Swiftplugin_Model_XmlProduct {
 				$method = 'g:price';
 				$tempXml[] = xml::$method($product->getPrice());
 				$method = 'g:sale_price';
-				$tempXml[] = xml::$method(is_null($product->getSpecialPrice()) ? '' : $product->getSpecialPrice());
+				
+				$special_price = '';
+				
+				if (!is_null($product->getSpecialPrice())) {
+					
+					if($today >= strtotime($product->getSpecialFromDate()) && $today <= strtotime($product->getSpecialToDate()) || $today >= strtotime($product->getSpecialFromDate()) && is_null($product->getSpecialToDate())) {
+						$special_price = $product->getSpecialPrice();
+					}
+					
+				}
+				
+				$tempXml[] = xml::$method($special_price);
 				$categoryId = $product->getCategoryIds();
 				$categoryId = array_shift($categoryId);
 				$category = Mage::getModel('catalog/category')->load($categoryId);
