@@ -1,5 +1,5 @@
 {
-    "name": "OpenMageModuleFostering\/Swift_Swiftplugin",
+    "name": "openmage-module-fostering\/swift_swiftplugin",
     "type": "magento-module",
     "license": "LGPL",
     "homepage": "",
